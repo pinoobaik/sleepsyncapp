@@ -11,11 +11,11 @@ import Team from "./sections/Team";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Analisis from "./pages/Analisis";
 import Pengaturan from "./pages/Pengaturan";
 
-// ✅ Import layout sidebar dashboard
 import DashboardLayout from "./pages/DashboardLayout";
 
 function App() {
@@ -39,8 +39,9 @@ function App() {
       />
 
       {/* ── AUTH ── */}
-      <Route path="/login"    element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login"           element={<Login />} />
+      <Route path="/register"        element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* ── DASHBOARD (pakai sidebar layout) ── */}
       <Route element={<DashboardLayout />}>
