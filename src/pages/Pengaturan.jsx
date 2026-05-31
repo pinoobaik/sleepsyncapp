@@ -16,15 +16,13 @@ export default function Pengaturan() {
 
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState("");
 
   const update = (key, value) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  // AMBIL DATA PROFILE
+  // Ambil data profil
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -32,21 +30,16 @@ export default function Pengaturan() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
-        console.error("Token tidak ditemukan");
         setLoading(false);
         return;
       }
 
       const response = await axios.get("http://localhost:5000/api/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const user = response.data;
-
       setSettings({
         namaLengkap: user.nama || "",
         email: user.email || "",
@@ -67,8 +60,9 @@ export default function Pengaturan() {
     }
   };
 
-  // SIMPAN PROFILE
+  // Simpan profil
   const handleSave = async () => {
+    setSuccess("");
     try {
       const token = localStorage.getItem("token");
 
@@ -82,36 +76,31 @@ export default function Pengaturan() {
           usia: settings.usia,
           gender: settings.gender,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setSaved(true);
-
+      setSuccess("✓ Perubahan berhasil disimpan!");
       setTimeout(() => {
-        setSaved(false);
-      }, 3000);
+        window.location.reload(); // ← tambah ini
+      }, 1500);
     } catch (error) {
       console.error(
         "Gagal update profil:",
         error.response?.data || error.message
       );
-
-      alert(error.response?.data?.message || "Gagal menyimpan perubahan");
+      setSuccess("❌ Gagal menyimpan perubahan. Coba lagi.");
     }
   };
 
+  // Upload foto profil
   const handlePhotoUpload = async (e) => {
+    setSuccess("");
     try {
       const file = e.target.files[0];
-
       if (!file) return;
 
       const token = localStorage.getItem("token");
-
       const formData = new FormData();
       formData.append("photo", file);
 
@@ -131,11 +120,10 @@ export default function Pengaturan() {
         profilePicture: response.data.profile_picture,
       }));
 
-      alert("Foto profil berhasil diperbarui");
+      setSuccess("✓ Foto profil berhasil diperbarui!");
     } catch (error) {
       console.error(error);
-
-      alert(error.response?.data?.message || "Gagal upload foto");
+      setSuccess("❌ Gagal upload foto. Pastikan ukuran file maksimal 2MB.");
     }
   };
 
@@ -155,6 +143,17 @@ export default function Pengaturan() {
       </div>
 
       <div className="settings-panel">
+        {/* Notifikasi sukses / error */}
+        {success && (
+          <div
+            className={`auth-success ${
+              success.startsWith("❌") ? "auth-error" : ""
+            }`}
+          >
+            {success}
+          </div>
+        )}
+
         {/* Avatar */}
         <div className="avatar-section">
           <input
@@ -183,7 +182,6 @@ export default function Pengaturan() {
                   : "U"}
               </span>
             )}
-
             <div className="avatar-badge">🌙</div>
           </div>
 
@@ -194,17 +192,14 @@ export default function Pengaturan() {
             >
               Ganti Foto
             </button>
-
             <p className="avatar-hint">JPG, PNG maksimal 2MB</p>
           </div>
         </div>
 
-        {/* FORM */}
+        {/* Form */}
         <div className="form-grid">
-          {/* Nama */}
           <div className="form-group">
             <label className="form-label">Nama Lengkap</label>
-
             <input
               className="form-input"
               value={settings.namaLengkap}
@@ -213,10 +208,8 @@ export default function Pengaturan() {
             />
           </div>
 
-          {/* Email */}
           <div className="form-group">
             <label className="form-label">Email</label>
-
             <input
               className="form-input"
               type="email"
@@ -225,10 +218,8 @@ export default function Pengaturan() {
             />
           </div>
 
-          {/* Usia */}
           <div className="form-group">
             <label className="form-label">Usia</label>
-
             <input
               className="form-input"
               type="number"
@@ -239,27 +230,21 @@ export default function Pengaturan() {
             />
           </div>
 
-          {/* Gender */}
           <div className="form-group">
             <label className="form-label">Jenis Kelamin</label>
-
             <select
               className="form-select"
               value={settings.gender}
               onChange={(e) => update("gender", e.target.value)}
             >
               <option value="">Pilih Jenis Kelamin</option>
-
               <option value="Laki-laki">Laki-laki</option>
-
               <option value="Perempuan">Perempuan</option>
             </select>
           </div>
 
-          {/* Nomor HP */}
           <div className="form-group">
             <label className="form-label">Nomor HP</label>
-
             <input
               className="form-input"
               type="tel"
@@ -269,10 +254,8 @@ export default function Pengaturan() {
             />
           </div>
 
-          {/* Pekerjaan */}
           <div className="form-group">
             <label className="form-label">Pekerjaan</label>
-
             <input
               className="form-input"
               placeholder="Contoh: Mahasiswa, Karyawan"
@@ -281,10 +264,8 @@ export default function Pengaturan() {
             />
           </div>
 
-          {/* Kota */}
           <div className="form-group">
             <label className="form-label">Kota</label>
-
             <input
               className="form-input"
               placeholder="Masukkan kota"
@@ -294,7 +275,7 @@ export default function Pengaturan() {
           </div>
         </div>
 
-        {/* DESKTOP SAVE */}
+        {/* Tombol simpan — desktop */}
         <button
           className={`save-btn ${saved ? "saved" : ""}`}
           onClick={handleSave}
@@ -302,7 +283,7 @@ export default function Pengaturan() {
           {saved ? "✓ Tersimpan!" : "Simpan Perubahan"}
         </button>
 
-        {/* MOBILE SAVE */}
+        {/* Tombol simpan — mobile */}
         <div className="mobile-save">
           <button
             className={`save-btn full ${saved ? "saved" : ""}`}
