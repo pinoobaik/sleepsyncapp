@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Analisis from "./pages/Analisis";
 import Pengaturan from "./pages/Pengaturan";
 import DashboardLayout from "./pages/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./index.css";
 
@@ -23,11 +24,13 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* DASHBOARD */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/analisis" element={<Analisis />} />
-        <Route path="/pengaturan" element={<Pengaturan />} />
+      {/* DASHBOARD — hanya bisa diakses jika sudah login */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analisis" element={<Analisis />} />
+          <Route path="/pengaturan" element={<Pengaturan />} />
+        </Route>
       </Route>
     </Routes>
   );

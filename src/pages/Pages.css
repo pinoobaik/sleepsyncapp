@@ -75,8 +75,8 @@ body {
 }
 
 /* ===========================
-   PAGE CONTAINER
-   =========================== */
+         PAGE CONTAINER
+         =========================== */
 .page-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -87,8 +87,8 @@ body {
 }
 
 /* ===========================
-   HERO CLOCK (Dashboard)
-   =========================== */
+         HERO CLOCK (Dashboard)
+         =========================== */
 .hero-clock {
   background: linear-gradient(135deg, #e8faf2 0%, #d1f5e8 40%, #c4efff 100%);
   border-radius: var(--radius-xl);
@@ -234,8 +234,8 @@ body {
 }
 
 /* ===========================
-   STATS GRID
-   =========================== */
+         STATS GRID
+         =========================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -310,8 +310,8 @@ body {
 }
 
 /* ===========================
-   CHART SECTION
-   =========================== */
+         CHART SECTION
+         =========================== */
 .chart-section {
   background: white;
   border-radius: var(--radius-lg);
@@ -449,8 +449,8 @@ body {
 }
 
 /* ===========================
-   TWO COLUMN LAYOUT
-   =========================== */
+         TWO COLUMN LAYOUT
+         =========================== */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -605,8 +605,8 @@ body {
 }
 
 /* ===========================
-   TIPS
-   =========================== */
+         TIPS
+         =========================== */
 .tips-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -653,8 +653,8 @@ body {
 }
 
 /* ===========================
-   PAGE HERO (Analisis & Settings)
-   =========================== */
+         PAGE HERO (Analisis & Settings)
+         =========================== */
 .page-hero {
   border-radius: var(--radius-xl);
   padding: 36px 40px;
@@ -715,9 +715,27 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(45, 212, 160, 0.15);
+  color: var(--mint-600);
+}
+
+.tab-btn.active .tab-count {
+  background: var(--mint-600);
+  color: white;
+}
+
 /* ===========================
-   ANALISIS — Metrics Row
-   =========================== */
+         ANALISIS — Metrics Row
+         =========================== */
 .metrics-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -780,8 +798,8 @@ body {
 }
 
 /* ===========================
-   ANALISIS — Quality Chart
-   =========================== */
+         ANALISIS — Quality Chart
+         =========================== */
 .chart-card {
   background: white;
   border-radius: var(--radius-lg);
@@ -874,8 +892,8 @@ body {
 }
 
 /* ===========================
-   ANALISIS — Stacked Chart
-   =========================== */
+         ANALISIS — Stacked Chart
+         =========================== */
 .breakdown-card,
 .prediction-card {
   background: white;
@@ -1006,8 +1024,8 @@ body {
 }
 
 /* ===========================
-   ANALISIS — Factors
-   =========================== */
+         ANALISIS — Factors
+         =========================== */
 
 .factors-grid {
   display: grid;
@@ -1061,7 +1079,14 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: var(--neutral-700);
-  margin-bottom: 10px;
+  margin-bottom: 4px;
+}
+
+.factor-note {
+  font-size: 11px;
+  color: var(--neutral-400);
+  margin-bottom: 8px;
+  font-style: italic;
 }
 .factor-bar-bg {
   height: 6px;
@@ -1087,8 +1112,8 @@ body {
 }
 
 /* ===========================
-   TREND SECTION
-   =========================== */
+         TREND SECTION
+         =========================== */
 .trend-section {
   background: white;
   border-radius: var(--radius-lg);
@@ -1157,8 +1182,8 @@ body {
 }
 
 /* ===========================
-   AI REC CARD
-   =========================== */
+         AI REC CARD
+         =========================== */
 .ai-rec-card {
   background: linear-gradient(135deg, var(--mint-50) 0%, #e0f7fa 100%);
   border: 2px solid var(--mint-100);
@@ -1196,6 +1221,13 @@ body {
   line-height: 1.5;
 }
 
+.ai-rec-empty {
+  font-size: 14px;
+  color: var(--neutral-500);
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
 .score-circle {
   width: 90px;
   height: 90px;
@@ -1221,8 +1253,8 @@ body {
 }
 
 /* ===========================
-   SETTINGS LAYOUT
-   =========================== */
+         SETTINGS LAYOUT
+         =========================== */
 .settings-layout {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -1804,8 +1836,8 @@ body {
 }
 
 /* ===========================
-   RESPONSIVE — Tablet
-   =========================== */
+         RESPONSIVE — Tablet
+         =========================== */
 @media (max-width: 900px) {
   :root {
     --page-padding: 16px;
@@ -1867,8 +1899,8 @@ body {
 }
 
 /* ===========================
-   RESPONSIVE — Mobile
-   =========================== */
+         RESPONSIVE — Mobile
+         =========================== */
 @media (max-width: 600px) {
   :root {
     --page-padding: 12px;
@@ -2165,4 +2197,99 @@ body {
   background: linear-gradient(135deg, #059669, #047857);
   box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
   transform: translateY(-1px);
+}
+
+/* ── Stats Summary Row (Analisis page) ── */
+.stats-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(16, 185, 129, 0.08);
+  border-radius: 12px;
+  padding: 10px 16px;
+  min-width: 130px;
+}
+
+.stat-pill-icon {
+  font-size: 1.4rem;
+}
+
+.stat-pill-val {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #065f46;
+  line-height: 1.2;
+}
+
+.stat-pill-label {
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* mini bar chart inside stats row */
+.stat-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 56px;
+  margin-left: auto;
+}
+
+.stat-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.stat-bar-fill {
+  width: 18px;
+  min-height: 4px;
+  background: linear-gradient(to top, #10b981, #6ee7b7);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.4s ease;
+}
+
+.stat-bar-day {
+  font-size: 0.65rem;
+  color: #9ca3af;
+}
+
+.chart-empty {
+  color: #9ca3af;
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 16px 0;
+  width: 100%;
+}
+
+/* ── Field "dari profil" badge ── */
+.field-from-profile {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  vertical-align: middle;
+  letter-spacing: 0.01em;
 }
