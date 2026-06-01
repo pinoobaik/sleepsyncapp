@@ -256,12 +256,24 @@ export default function Pengaturan() {
 
           <div className="form-group">
             <label className="form-label">Pekerjaan</label>
-            <input
-              className="form-input"
-              placeholder="Contoh: Mahasiswa, Karyawan"
+            <select
+              className="form-select"
               value={settings.pekerjaan}
               onChange={(e) => update("pekerjaan", e.target.value)}
-            />
+            >
+              <option value="">Pilih Pekerjaan</option>
+              <option value="Accountant">Akuntan (Accountant)</option>
+              <option value="Doctor">Dokter (Doctor)</option>
+              <option value="Engineer">Insinyur (Engineer)</option>
+              <option value="Lawyer">Pengacara (Lawyer)</option>
+              <option value="Manager">Manajer (Manager)</option>
+              <option value="Nurse">Perawat (Nurse)</option>
+              <option value="Sales Representative">Sales Representative</option>
+              <option value="Salesperson">Salesperson</option>
+              <option value="Scientist">Ilmuwan (Scientist)</option>
+              <option value="Software Engineer">Software Engineer</option>
+              <option value="Teacher">Guru/Dosen (Teacher)</option>
+            </select>
           </div>
 
           <div className="form-group">

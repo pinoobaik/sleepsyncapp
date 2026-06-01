@@ -1426,6 +1426,8 @@ body {
   font-size: 13px;
   color: var(--neutral-600, #525252);
   line-height: 1.6;
+  margin-bottom: 20px;  
+  margin-top: 8px;   
 }
 
 /* Range slider */

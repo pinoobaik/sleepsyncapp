@@ -14,21 +14,57 @@ function buildFactors(form) {
   if (!hasData) {
     // Estimasi umum sebelum user mengisi form
     return [
-      { name: "Olahraga", impact: 82, icon: "🏃", positive: true,  note: "estimasi umum" },
-      { name: "Stres",    impact: 65, icon: "😰", positive: false, note: "estimasi umum" },
-      { name: "Kafein",   impact: 71, icon: "☕", positive: false, note: "estimasi umum" },
-      { name: "Meditasi", impact: 88, icon: "🧘", positive: true,  note: "estimasi umum" },
-      { name: "Layar HP", impact: 58, icon: "📱", positive: false, note: "estimasi umum" },
-      { name: "Diet Sehat", impact: 79, icon: "🥗", positive: true, note: "estimasi umum" },
+      {
+        name: "Olahraga",
+        impact: 82,
+        icon: "🏃",
+        positive: true,
+        note: "estimasi umum",
+      },
+      {
+        name: "Stres",
+        impact: 65,
+        icon: "😰",
+        positive: false,
+        note: "estimasi umum",
+      },
+      {
+        name: "Kafein",
+        impact: 71,
+        icon: "☕",
+        positive: false,
+        note: "estimasi umum",
+      },
+      {
+        name: "Meditasi",
+        impact: 88,
+        icon: "🧘",
+        positive: true,
+        note: "estimasi umum",
+      },
+      {
+        name: "Layar HP",
+        impact: 58,
+        icon: "📱",
+        positive: false,
+        note: "estimasi umum",
+      },
+      {
+        name: "Diet Sehat",
+        impact: 79,
+        icon: "🥗",
+        positive: true,
+        note: "estimasi umum",
+      },
     ];
   }
 
-  const stress   = parseInt(form.stress_level)    || 5;  // 1–10
+  const stress = parseInt(form.stress_level) || 5; // 1–10
   const activity = parseFloat(form.physical_activity) || 0; // menit/hari
-  const steps    = parseInt(form.daily_steps)     || 0;
-  const quality  = parseInt(form.quality_of_sleep) || 5; // 1–10
+  const steps = parseInt(form.daily_steps) || 0;
+  const quality = parseInt(form.quality_of_sleep) || 5; // 1–10
   const duration = parseFloat(form.sleep_duration) || 0;
-  const bmi      = (form.bmi_category || "").toLowerCase();
+  const bmi = (form.bmi_category || "").toLowerCase();
 
   // Aktivitas fisik: 0 mnt → 10%, 60+ mnt → 95%
   const activityImpact = Math.min(10 + Math.round((activity / 60) * 85), 95);
@@ -53,10 +89,19 @@ function buildFactors(form) {
   // BMI: Normal/Underweight → dampak rendah; Overweight/Obese → dampak negatif tinggi
   let bmiImpact = 30;
   let bmiPositive = true;
-  if (bmi === "obese" || bmi === "obesitas") { bmiImpact = 85; bmiPositive = false; }
-  else if (bmi === "overweight")             { bmiImpact = 60; bmiPositive = false; }
-  else if (bmi === "normal")                 { bmiImpact = 20; bmiPositive = true; }
-  else if (bmi === "underweight")            { bmiImpact = 35; bmiPositive = false; }
+  if (bmi === "obese" || bmi === "obesitas") {
+    bmiImpact = 85;
+    bmiPositive = false;
+  } else if (bmi === "overweight") {
+    bmiImpact = 60;
+    bmiPositive = false;
+  } else if (bmi === "normal") {
+    bmiImpact = 20;
+    bmiPositive = true;
+  } else if (bmi === "underweight") {
+    bmiImpact = 35;
+    bmiPositive = false;
+  }
 
   return [
     {
@@ -126,72 +171,132 @@ const initialForm = {
 function buildRekomendasi(form, prediction) {
   const rekom = [];
 
-  const duration    = parseFloat(form.sleep_duration) || 0;
-  const stress      = parseInt(form.stress_level) || 5;
-  const activity    = parseFloat(form.physical_activity) || 0;
-  const steps       = parseInt(form.daily_steps) || 0;
-  const quality     = parseInt(form.quality_of_sleep) || 5;
-  const bmi         = (form.bmi_category || "").toLowerCase();
-  const heartRate   = parseInt(form.heart_rate) || 0;
+  const duration = parseFloat(form.sleep_duration) || 0;
+  const stress = parseInt(form.stress_level) || 5;
+  const activity = parseFloat(form.physical_activity) || 0;
+  const steps = parseInt(form.daily_steps) || 0;
+  const quality = parseInt(form.quality_of_sleep) || 5;
+  const bmi = (form.bmi_category || "").toLowerCase();
+  const heartRate = parseInt(form.heart_rate) || 0;
 
   // ── Durasi tidur ──────────────────────────────────────────────
   if (duration < 6) {
-    rekom.push("⏰ Durasi tidur Anda hanya " + duration + " jam — tambah minimal hingga 7–9 jam per malam.");
+    rekom.push(
+      "⏰ Durasi tidur Anda hanya " +
+        duration +
+        " jam — tambah minimal hingga 7–9 jam per malam."
+    );
   } else if (duration > 9) {
-    rekom.push("😴 Tidur lebih dari 9 jam bisa jadi tanda kelelahan kronis — pertimbangkan konsultasi dokter.");
+    rekom.push(
+      "😴 Tidur lebih dari 9 jam bisa jadi tanda kelelahan kronis — pertimbangkan konsultasi dokter."
+    );
   } else {
-    rekom.push("✅ Durasi tidur " + duration + " jam sudah dalam rentang ideal. Pertahankan konsistensinya.");
+    rekom.push(
+      "✅ Durasi tidur " +
+        duration +
+        " jam sudah dalam rentang ideal. Pertahankan konsistensinya."
+    );
   }
 
   // ── Stres ─────────────────────────────────────────────────────
   if (stress >= 8) {
-    rekom.push("🧘 Tingkat stres Anda sangat tinggi (" + stress + "/10). Coba teknik relaksasi seperti meditasi atau pernapasan dalam sebelum tidur.");
+    rekom.push(
+      "🧘 Tingkat stres Anda sangat tinggi (" +
+        stress +
+        "/10). Coba teknik relaksasi seperti meditasi atau pernapasan dalam sebelum tidur."
+    );
   } else if (stress >= 6) {
-    rekom.push("😰 Stres pada level " + stress + "/10 dapat mengganggu kualitas tidur — kurangi screen time dan coba journaling malam hari.");
+    rekom.push(
+      "😰 Stres pada level " +
+        stress +
+        "/10 dapat mengganggu kualitas tidur — kurangi screen time dan coba journaling malam hari."
+    );
   }
 
   // ── Aktivitas fisik ───────────────────────────────────────────
   if (activity < 20) {
-    rekom.push("🏃 Aktivitas fisik Anda hanya " + activity + " menit/hari — targetkan minimal 30 menit olahraga ringan untuk meningkatkan kualitas tidur.");
+    rekom.push(
+      "🏃 Aktivitas fisik Anda hanya " +
+        activity +
+        " menit/hari — targetkan minimal 30 menit olahraga ringan untuk meningkatkan kualitas tidur."
+    );
   } else if (activity >= 20 && activity < 30) {
-    rekom.push("💪 Tingkatkan aktivitas fisik dari " + activity + " ke 30+ menit/hari untuk mendapatkan manfaat tidur yang optimal.");
+    rekom.push(
+      "💪 Tingkatkan aktivitas fisik dari " +
+        activity +
+        " ke 30+ menit/hari untuk mendapatkan manfaat tidur yang optimal."
+    );
   } else {
-    rekom.push("✅ Aktivitas fisik " + activity + " menit/hari sudah baik — lanjutkan rutinitas ini.");
+    rekom.push(
+      "✅ Aktivitas fisik " +
+        activity +
+        " menit/hari sudah baik — lanjutkan rutinitas ini."
+    );
   }
 
   // ── Langkah harian ────────────────────────────────────────────
   if (steps > 0 && steps < 5000) {
-    rekom.push("👟 Langkah harian Anda (" + steps.toLocaleString() + ") masih rendah — targetkan 7.000–10.000 langkah per hari.");
+    rekom.push(
+      "👟 Langkah harian Anda (" +
+        steps.toLocaleString() +
+        ") masih rendah — targetkan 7.000–10.000 langkah per hari."
+    );
   }
 
   // ── Kualitas tidur subjektif ──────────────────────────────────
   if (quality <= 4) {
-    rekom.push("🛏️ Kualitas tidur subjektif Anda rendah (" + quality + "/10). Perhatikan kebersihan tidur: hindari kafein setelah pukul 14.00 dan matikan layar 1 jam sebelum tidur.");
+    rekom.push(
+      "🛏️ Kualitas tidur subjektif Anda rendah (" +
+        quality +
+        "/10). Perhatikan kebersihan tidur: hindari kafein setelah pukul 14.00 dan matikan layar 1 jam sebelum tidur."
+    );
   }
 
   // ── BMI ───────────────────────────────────────────────────────
   if (bmi === "obese" || bmi === "obesitas") {
-    rekom.push("⚖️ Berat badan berlebih (Obesitas) berkorelasi dengan risiko Sleep Apnea — pertimbangkan program diet sehat dan olahraga rutin.");
+    rekom.push(
+      "⚖️ Berat badan berlebih (Obesitas) berkorelasi dengan risiko Sleep Apnea — pertimbangkan program diet sehat dan olahraga rutin."
+    );
   } else if (bmi === "overweight" || bmi === "gemuk (overweight)") {
-    rekom.push("⚖️ BMI Overweight dapat mempengaruhi kualitas tidur — aktivitas fisik rutin dan pola makan seimbang sangat dianjurkan.");
+    rekom.push(
+      "⚖️ BMI Overweight dapat mempengaruhi kualitas tidur — aktivitas fisik rutin dan pola makan seimbang sangat dianjurkan."
+    );
   }
 
   // ── Detak jantung ─────────────────────────────────────────────
   if (heartRate > 100) {
-    rekom.push("❤️ Detak jantung istirahat " + heartRate + " bpm tergolong tinggi (takikardia) — konsultasikan ke dokter, karena dapat mempengaruhi kualitas tidur.");
+    rekom.push(
+      "❤️ Detak jantung istirahat " +
+        heartRate +
+        " bpm tergolong tinggi (takikardia) — konsultasikan ke dokter, karena dapat mempengaruhi kualitas tidur."
+    );
   } else if (heartRate > 0 && heartRate < 50) {
-    rekom.push("❤️ Detak jantung " + heartRate + " bpm tergolong sangat rendah (bradikardia) — sebaiknya dikonsultasikan ke dokter.");
+    rekom.push(
+      "❤️ Detak jantung " +
+        heartRate +
+        " bpm tergolong sangat rendah (bradikardia) — sebaiknya dikonsultasikan ke dokter."
+    );
   }
 
   // ── Rekomendasi spesifik gangguan ─────────────────────────────
   if (prediction === "Insomnia") {
-    rekom.push("🌙 Untuk mengatasi Insomnia: terapkan waktu tidur & bangun yang sama setiap hari, hindari tidur siang lebih dari 20 menit.");
-    rekom.push("🩺 Pertimbangkan Cognitive Behavioral Therapy for Insomnia (CBT-I) — terbukti lebih efektif dari obat tidur jangka panjang.");
+    rekom.push(
+      "🌙 Untuk mengatasi Insomnia: terapkan waktu tidur & bangun yang sama setiap hari, hindari tidur siang lebih dari 20 menit."
+    );
+    rekom.push(
+      "🩺 Pertimbangkan Cognitive Behavioral Therapy for Insomnia (CBT-I) — terbukti lebih efektif dari obat tidur jangka panjang."
+    );
   } else if (prediction === "Sleep Apnea") {
-    rekom.push("😮‍💨 Sleep Apnea membutuhkan evaluasi medis — konsultasikan ke dokter untuk kemungkinan terapi CPAP.");
-    rekom.push("🛌 Tidur miring (bukan telentang) dapat mengurangi episode henti napas pada Sleep Apnea ringan-sedang.");
+    rekom.push(
+      "😮‍💨 Sleep Apnea membutuhkan evaluasi medis — konsultasikan ke dokter untuk kemungkinan terapi CPAP."
+    );
+    rekom.push(
+      "🛌 Tidur miring (bukan telentang) dapat mengurangi episode henti napas pada Sleep Apnea ringan-sedang."
+    );
   } else {
-    rekom.push("🌟 Pola tidur Anda terdeteksi normal. Pertahankan rutinitas tidur sehat untuk menjaga kondisi ini.");
+    rekom.push(
+      "🌟 Pola tidur Anda terdeteksi normal. Pertahankan rutinitas tidur sehat untuk menjaga kondisi ini."
+    );
   }
 
   // Batasi maksimal 5 rekomendasi agar tidak overwhelming
@@ -200,8 +305,8 @@ function buildRekomendasi(form, prediction) {
 
 function buildRisiko(form, prediction) {
   const duration = parseFloat(form.sleep_duration) || 0;
-  const stress   = parseInt(form.stress_level) || 5;
-  const bmi      = (form.bmi_category || "").toLowerCase();
+  const stress = parseInt(form.stress_level) || 5;
+  const bmi = (form.bmi_category || "").toLowerCase();
 
   if (prediction === "Sleep Apnea") {
     return "⚠️ Sleep Apnea meningkatkan risiko hipertensi, penyakit jantung, dan stroke. Penanganan segera sangat dianjurkan.";
@@ -212,12 +317,16 @@ function buildRisiko(form, prediction) {
 
   // Pola Normal tapi ada faktor risiko
   const risks = [];
-  if (duration < 6)             risks.push("kurang tidur kronis");
-  if (stress >= 8)              risks.push("stres tinggi");
+  if (duration < 6) risks.push("kurang tidur kronis");
+  if (stress >= 8) risks.push("stres tinggi");
   if (bmi === "obese" || bmi === "obesitas") risks.push("obesitas");
 
   if (risks.length > 0) {
-    return "🟡 Pola tidur normal, namun faktor " + risks.join(", ") + " dapat meningkatkan risiko gangguan tidur di kemudian hari jika tidak ditangani.";
+    return (
+      "🟡 Pola tidur normal, namun faktor " +
+      risks.join(", ") +
+      " dapat meningkatkan risiko gangguan tidur di kemudian hari jika tidak ditangani."
+    );
   }
   return "✅ Risiko rendah. Pertahankan pola hidup dan tidur sehat Anda.";
 }
@@ -339,7 +448,9 @@ export default function Analisis() {
   };
 
   const handlePredict = async () => {
-    const required = Object.keys(initialForm);
+    const required = Object.keys(initialForm).filter(
+      (k) => k !== "sleep_disorder"
+    );
     const missing = required.filter((k) => !form[k]);
     if (missing.length > 0) {
       setError("Harap lengkapi semua field sebelum memprediksi.");
@@ -446,9 +557,10 @@ export default function Analisis() {
         </div>
         <div className="tab-switcher">
           {["minggu", "bulan"].map((t) => {
-            const count = t === "bulan"
-              ? allData.slice(0, 30).length
-              : allData.slice(0, 7).length;
+            const count =
+              t === "bulan"
+                ? allData.slice(0, 30).length
+                : allData.slice(0, 7).length;
             return (
               <button
                 key={t}
@@ -535,10 +647,7 @@ export default function Analisis() {
               <span>⚠️</span>
               <span>
                 Beberapa data profil belum diisi.{" "}
-                <a
-                  href="/pengaturan"
-                  className="profile-incomplete-link"
-                >
+                <a href="/pengaturan" className="profile-incomplete-link">
                   Lengkapi profil
                 </a>{" "}
                 agar Jenis Kelamin, Usia, dan Pekerjaan terisi otomatis.
@@ -546,6 +655,12 @@ export default function Analisis() {
             </div>
           )}
 
+          {/* Disclaimer rentang usia */}
+          <div className="info-box">
+            ℹ️ Model dioptimalkan untuk rentang usia 27–59 tahun. Hasil untuk
+            usia di luar rentang ini mungkin kurang akurat.
+          </div>
+          
           <div className="predict-form-grid">
             {/* Jenis Kelamin */}
             <div className="form-group">
@@ -595,14 +710,27 @@ export default function Analisis() {
                   <span className="field-from-profile">dari profil</span>
                 )}
               </label>
-              <input
-                type="text"
+              <select
                 name="occupation"
                 value={form.occupation}
                 onChange={handleChange}
                 className="form-input"
-                placeholder="Contoh: Software Engineer"
-              />
+              >
+                <option value="">Pilih pekerjaan</option>
+                <option value="Accountant">Akuntan (Accountant)</option>
+                <option value="Doctor">Dokter (Doctor)</option>
+                <option value="Engineer">Insinyur (Engineer)</option>
+                <option value="Lawyer">Pengacara (Lawyer)</option>
+                <option value="Manager">Manajer (Manager)</option>
+                <option value="Nurse">Perawat (Nurse)</option>
+                <option value="Sales Representative">
+                  Sales Representative
+                </option>
+                <option value="Salesperson">Salesperson</option>
+                <option value="Scientist">Ilmuwan (Scientist)</option>
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Teacher">Guru/Dosen (Teacher)</option>
+              </select>
             </div>
 
             {/* Durasi Tidur */}
@@ -621,32 +749,6 @@ export default function Analisis() {
               />
             </div>
 
-            {/* Kualitas Tidur */}
-            <div className="form-group">
-              <label className="form-label">
-                Kualitas Tidur (1–10)
-                {form.quality_of_sleep && (
-                  <span className="form-label-val">
-                    {form.quality_of_sleep}
-                  </span>
-                )}
-              </label>
-              <input
-                type="range"
-                name="quality_of_sleep"
-                value={form.quality_of_sleep}
-                onChange={handleChange}
-                className="form-range"
-                min="1"
-                max="10"
-                step="1"
-              />
-              <div className="range-labels">
-                <span>Buruk (1)</span>
-                <span>Sangat Baik (10)</span>
-              </div>
-            </div>
-
             {/* Aktivitas Fisik */}
             <div className="form-group">
               <label className="form-label">Aktivitas Fisik (menit/hari)</label>
@@ -658,31 +760,8 @@ export default function Analisis() {
                 className="form-input"
                 placeholder="Contoh: 45"
                 min="0"
+                max="180"
               />
-            </div>
-
-            {/* Tingkat Stres */}
-            <div className="form-group">
-              <label className="form-label">
-                Tingkat Stres (1–10)
-                {form.stress_level && (
-                  <span className="form-label-val">{form.stress_level}</span>
-                )}
-              </label>
-              <input
-                type="range"
-                name="stress_level"
-                value={form.stress_level}
-                onChange={handleChange}
-                className="form-range"
-                min="1"
-                max="10"
-                step="1"
-              />
-              <div className="range-labels">
-                <span>Rendah</span>
-                <span>Tinggi</span>
-              </div>
             </div>
 
             {/* Kategori BMI */}
@@ -695,7 +774,7 @@ export default function Analisis() {
                 className="form-input"
               >
                 <option value="">Pilih kategori</option>
-                <option value="Underweight">Kurus (Underweight)</option>
+                {/* <option value="Underweight">Kurus (Underweight)</option> */}
                 <option value="Normal">Normal</option>
                 <option value="Overweight">Gemuk (Overweight)</option>
                 <option value="Obese">Obesitas</option>
@@ -744,23 +823,78 @@ export default function Analisis() {
               />
             </div>
 
-            {/* Gangguan Tidur */}
-            <div className="form-group form-group-full">
-              <label className="form-label">Gangguan Tidur</label>
+            {/* Riwayat Keluhan Tidur */}
+            <div className="form-group">
+              <label className="form-label">
+                Riwayat Keluhan Tidur
+                <span className="form-hint"> (opsional, untuk konteks)</span>
+              </label>
               <select
                 name="sleep_disorder"
                 value={form.sleep_disorder}
                 onChange={handleChange}
                 className="form-input"
               >
-                <option value="">Pilih gangguan tidur</option>
-                <option value="None">Tidak Ada</option>
-                <option value="Insomnia">Insomnia</option>
-                <option value="Sleep Apnea">Sleep Apnea</option>
+                <option value="">Pilih keluhan (jika ada)</option>
+                <option value="None">Tidak Ada Keluhan</option>
+                <option value="Insomnia">Sering sulit tidur (Insomnia)</option>
+                <option value="Sleep Apnea">
+                  Sering mendengkur/henti napas
+                </option>
                 <option value="Restless Leg Syndrome">
-                  Restless Leg Syndrome
+                  Kaki gelisah saat tidur
                 </option>
               </select>
+            </div>
+
+            {/* Kualitas Tidur */}
+            <div className="form-group">
+              <label className="form-label">
+                Kualitas Tidur (1–10)
+                {form.quality_of_sleep && (
+                  <span className="form-label-val">
+                    {form.quality_of_sleep}
+                  </span>
+                )}
+              </label>
+              <input
+                type="range"
+                name="quality_of_sleep"
+                value={form.quality_of_sleep}
+                onChange={handleChange}
+                className="form-range"
+                min="1"
+                max="10"
+                step="1"
+              />
+              <div className="range-labels">
+                <span>Buruk (1)</span>
+                <span>Sangat Baik (10)</span>
+              </div>
+            </div>
+
+            {/* Tingkat Stres */}
+            <div className="form-group">
+              <label className="form-label">
+                Tingkat Stres (1–10)
+                {form.stress_level && (
+                  <span className="form-label-val">{form.stress_level}</span>
+                )}
+              </label>
+              <input
+                type="range"
+                name="stress_level"
+                value={form.stress_level}
+                onChange={handleChange}
+                className="form-range"
+                min="1"
+                max="10"
+                step="1"
+              />
+              <div className="range-labels">
+                <span>Rendah</span>
+                <span>Tinggi</span>
+              </div>
             </div>
           </div>
 
@@ -869,9 +1003,7 @@ export default function Analisis() {
                 </span>
               </div>
               <div className="factor-name">{f.name}</div>
-              {f.note && (
-                <div className="factor-note">{f.note}</div>
-              )}
+              {f.note && <div className="factor-note">{f.note}</div>}
               <div className="factor-bar-bg">
                 <div
                   className={`factor-bar-fill ${
@@ -900,7 +1032,8 @@ export default function Analisis() {
           ) : (
             <p className="ai-rec-empty">
               Rekomendasi akan muncul setelah Anda melakukan prediksi di atas.
-              Isi data kesehatan Anda dan klik <strong>🔮 Prediksi Kualitas Tidur</strong>.
+              Isi data kesehatan Anda dan klik{" "}
+              <strong>🔮 Prediksi Kualitas Tidur</strong>.
             </p>
           )}
         </div>

@@ -348,31 +348,28 @@ export default function Hero() {
             <h1 className="hero-title">Sleep Hygiene</h1>
             <span className="hero-title-accent">Predict</span>
             <p className="hero-desc">
-              Analisis Tidur Cerdas untuk Kesehatan Lebih Baik. Membantu Anda Memahami Pola Istirahat, Memprediksi Kualitas Tidur, dan Meningkatkan Produktivitas Setiap Hari.
+              Analisis Tidur Cerdas untuk Kesehatan Lebih Baik. Membantu Anda
+              Memahami Pola Istirahat, Memprediksi Kualitas Tidur, dan
+              Meningkatkan Produktivitas Setiap Hari.
             </p>
-            <button 
-  className="btn-primary"
-  onClick={() => navigate("/login")}
->
-  Mulai Analisis
-</button>
+            <button className="btn-primary" onClick={() => navigate("/login")}>
+              Mulai Analisis
+            </button>
           </div>
 
           <div className="hero-visual">
             <div className="hero-card-wrap">
-              <div className="floating-badge top-right">
-                <div className="fb-icon green">🌙</div>
-                <div className="fb-text">
-                  <span className="fb-title">Tidur Nyenyak</span>
-                  <span className="fb-sub">Fase REM tercapai</span>
-                </div>
-              </div>
-
               <div className="hero-card">
                 <div className="sleep-score-ring">
                   <svg className="ring-svg" viewBox="0 0 140 140">
                     <defs>
-                      <linearGradient id="mintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <linearGradient
+                        id="mintGrad"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                      >
                         <stop offset="0%" stopColor="#2dd4a0" />
                         <stop offset="100%" stopColor="#1ab88a" />
                       </linearGradient>
@@ -402,6 +399,14 @@ export default function Hero() {
                     <span className="stat-value">Baik</span>
                     <span className="stat-label">Kualitas</span>
                   </div>
+                </div>
+              </div>
+
+              <div className="floating-badge top-right">
+                <div className="fb-icon green">🌙</div>
+                <div className="fb-text">
+                  <span className="fb-title">Tidur Nyenyak</span>
+                  <span className="fb-sub">Fase REM tercapai</span>
                 </div>
               </div>
 

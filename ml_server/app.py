@@ -7,6 +7,22 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+# Statistik dataset untuk StandardScaler 
+STATS = {
+    "age":      {"mean": 42.18, "std": 8.66},
+    "sleep":    {"mean": 7.13,  "std": 0.80},
+    "quality":  {"mean": 7.31,  "std": 1.20},
+    "physical": {"mean": 59.17, "std": 20.80},
+    "stress":   {"mean": 5.39,  "std": 1.77},
+    "systolic": {"mean": 128.55,"std": 7.74},
+    "diastolic":{"mean": 84.65, "std": 6.15},
+    "hr":       {"mean": 70.17, "std": 4.13},
+    "steps":    {"mean": 6816.84,"std": 1615.75},
+}
+
+def scale(val, key):
+    return (val - STATS[key]["mean"]) / (STATS[key]["std"] + 1e-8)
+
 # Custom layer ResidualBlock 
 @keras.saving.register_keras_serializable()
 class ResidualBlock(keras.layers.Layer):
@@ -83,53 +99,62 @@ LABELS = ["None", "Insomnia", "Sleep Apnea"]
 
 # Encoding helper 
 def encode_gender(val):
+    # Female=0, Male=1 (LabelEncoder alfabetis)
     return 1 if str(val).lower() in ["male", "laki-laki"] else 0
 
 def encode_bmi(val):
-    mapping = {"normal": 0, "overweight": 1, "obese": 2, "underweight": 3}
+    # LabelEncoder alfabetis: Normal=0, Normal Weight=1, Obese=2, Overweight=3
+    mapping = {
+        "normal": 0, "normal weight": 0,
+        "overweight": 3, "obese": 2,
+        "underweight": 1, "kurus": 1,
+        "gemuk": 2, "obesitas": 2,
+    }
     return mapping.get(str(val).lower(), 0)
 
-def encode_sleep_disorder(val):
-    mapping = {"none": 0, "insomnia": 1, "sleep apnea": 2}
-    return mapping.get(str(val).lower(), 0)
+def encode_occupation(val):
+    # LabelEncoder alfabetis dari dataset
+    mapping = {
+        "accountant": 0, "doctor": 1, "engineer": 2, "lawyer": 3,
+        "manager": 4, "nurse": 5, "sales representative": 6,
+        "salesperson": 7, "scientist": 8, "software engineer": 9,
+        "teacher": 10,
+        # mapping tambahan untuk pilihan Indonesia
+        "mahasiswa": 9, "student": 9, "karyawan": 4,
+        "perawat": 5, "guru": 10, "dokter": 1,
+    }
+    val_lower = str(val).lower()
+    for key, code in mapping.items():
+        if key in val_lower:
+            return code
+    return 4  # default: Manager (tengah)
 
 def encode_blood_pressure(val):
     try:
         parts = str(val).split("/")
         return float(parts[0]), float(parts[1])
     except:
-        return 120.0, 80.0
-
-def encode_occupation(val):
-    occupations = [
-        "accountant", "doctor", "engineer", "lawyer", "manager",
-        "nurse", "salesperson", "scientist", "software engineer",
-        "teacher", "student", "mahasiswa", "karyawan", "other"
-    ]
-    val_lower = str(val).lower()
-    for i, occ in enumerate(occupations):
-        if occ in val_lower:
-            return i
-    return len(occupations)
+        return 128.0, 84.0  # gunakan mean dataset sebagai default
 
 def build_features(data):
-    sistolik, diastolik = encode_blood_pressure(data.get("blood_pressure", "120/80"))
+    sistolik, diastolik = encode_blood_pressure(data.get("blood_pressure", "128/84"))
+
     features = [
-        encode_gender(data.get("gender", "Male")),
-        float(data.get("age", 30)),
-        encode_occupation(data.get("occupation", "")),
-        float(data.get("sleep_duration", 7)),
-        float(data.get("quality_of_sleep", 7)),
-        float(data.get("physical_activity", 30)),
-        float(data.get("stress_level", 5)),
-        encode_bmi(data.get("bmi_category", "Normal")),
-        sistolik,
-        diastolik,
-        float(data.get("heart_rate", 70)),
-        float(data.get("daily_steps", 7000)),
-        encode_sleep_disorder(data.get("sleep_disorder", "None")),
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        encode_gender(data.get("gender", "Male")),           # 1 — binary, tidak di-scale
+        scale(float(data.get("age", 42)), "age"),             # 2
+        encode_occupation(data.get("occupation", "")),        # 3 — label encoded, tidak di-scale
+        scale(float(data.get("sleep_duration", 7)), "sleep"), # 4
+        scale(float(data.get("quality_of_sleep", 7)), "quality"), # 5
+        scale(float(data.get("physical_activity", 59)), "physical"), # 6
+        scale(float(data.get("stress_level", 5)), "stress"),  # 7
+        encode_bmi(data.get("bmi_category", "Normal")),       # 8 — label encoded, tidak di-scale
+        scale(sistolik, "systolic"),                          # 9
+        scale(diastolik, "diastolic"),                        # 10
+        scale(float(data.get("heart_rate", 70)), "hr"),       # 11
+        scale(float(data.get("daily_steps", 6800)), "steps"), # 12
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0                   # 13-19 padding
     ]
+
     return np.array(features, dtype=np.float32).reshape(1, -1)
 
 # Endpoint prediksi 
