@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   const navigate = useNavigate();
+
+  const [stats, setStats] = useState({
+    avg_duration: 7.5,
+    quality_score: 75,
+    total_users: 0,
+  });
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/sleep-stats/public")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.avg_duration) setStats(data);
+      })
+      .catch(() => {}); // Gagal fetch → pakai nilai default
+  }, []);
+
+  // Format durasi: 7.5 → "7h 30m"
+  const formatDuration = (hours) => {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  };
+
+  // Label kualitas berdasarkan skor
+  const qualityLabel = (score) => {
+    if (score >= 80) return "Sangat Baik";
+    if (score >= 60) return "Baik";
+    if (score >= 40) return "Cukup";
+    return "Kurang";
+  };
   return (
     <>
       <style>{`
@@ -360,6 +391,18 @@ export default function Hero() {
           <div className="hero-visual">
             <div className="hero-card-wrap">
               <div className="hero-card">
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "#94a3b8",
+                    textAlign: "center",
+                    marginTop: "10px",
+                  }}
+                >
+                  📊 Rata-rata dari{" "}
+                  {stats.total_users > 0 ? stats.total_users : "semua"} pengguna
+                  SleepSync
+                </p>
                 <div className="sleep-score-ring">
                   <svg className="ring-svg" viewBox="0 0 140 140">
                     <defs>
@@ -378,7 +421,7 @@ export default function Hero() {
                     <circle className="ring-progress" cx="70" cy="70" r="60" />
                   </svg>
                   <div className="ring-label">
-                    <span className="ring-score">75</span>
+                    <span className="ring-score">{stats.quality_score}</span>
                     <span className="ring-text">Skor Tidur</span>
                   </div>
                 </div>
@@ -386,7 +429,9 @@ export default function Hero() {
                 <div className="sleep-stats">
                   <div className="stat-item">
                     <span className="stat-emoji">⏱️</span>
-                    <span className="stat-value">7h 30m</span>
+                    <span className="stat-value">
+                      {formatDuration(stats.avg_duration)}
+                    </span>
                     <span className="stat-label">Durasi</span>
                   </div>
                   <div className="stat-item">
@@ -396,7 +441,9 @@ export default function Hero() {
                   </div>
                   <div className="stat-item">
                     <span className="stat-emoji">💚</span>
-                    <span className="stat-value">Baik</span>
+                    <span className="stat-value">
+                      {qualityLabel(stats.quality_score)}
+                    </span>
                     <span className="stat-label">Kualitas</span>
                   </div>
                 </div>

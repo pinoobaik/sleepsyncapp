@@ -29,9 +29,16 @@ router.post("/sleep-analysis", verifyToken, (req, res) => {
   `;
 
   const values = [
-    user_id, sleep_duration, quality_of_sleep, physical_activity,
-    stress_level, bmi_category, blood_pressure, heart_rate,
-    daily_steps, sleep_disorder,
+    user_id,
+    sleep_duration,
+    quality_of_sleep,
+    physical_activity,
+    stress_level,
+    bmi_category,
+    blood_pressure,
+    heart_rate,
+    daily_steps,
+    sleep_disorder,
   ];
 
   db.query(query, values, (err, result) => {
@@ -66,6 +73,29 @@ router.get("/sleep-analysis", verifyToken, (req, res) => {
   db.query(query, [user_id], (err, results) => {
     if (err) return res.status(500).json({ message: err.message });
     return res.status(200).json(results);
+  });
+});
+
+// Statistik publik semua user (untuk landing page) 
+router.get("/sleep-stats/public", (req, res) => {
+  const query = `
+    SELECT 
+      ROUND(AVG(sleep_duration), 1)          AS avg_duration,
+      ROUND(AVG(quality_of_sleep) * 10, 0)   AS avg_quality_score,
+      COUNT(*)                                AS total_records,
+      COUNT(DISTINCT user_id)                 AS total_users,
+      SUM(CASE WHEN sleep_disorder = 'None' THEN 1 ELSE 0 END) AS normal_count
+    FROM sleep_analysis
+  `;
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ message: err.message });
+    const data = results[0];
+    return res.status(200).json({
+      avg_duration: data.avg_duration || 7.5,
+      quality_score: data.avg_quality_score || 75,
+      total_users: data.total_users || 0,
+      total_records: data.total_records || 0,
+    });
   });
 });
 

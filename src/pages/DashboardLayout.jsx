@@ -40,13 +40,21 @@ export default function DashboardLayout() {
       });
       setUser(response.data);
     } catch (error) {
-      console.error("Gagal mengambil profil:", error.response?.data || error.message);
+      console.error(
+        "Gagal mengambil profil:",
+        error.response?.data || error.message
+      );
     }
   };
 
   const getInitials = (name) => {
     if (!name) return "U";
-    return name.split(" ").slice(0, 2).map((word) => word[0]).join("").toUpperCase();
+    return name
+      .split(" ")
+      .slice(0, 2)
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
   };
 
   const getProfileImage = () => {
@@ -62,12 +70,13 @@ export default function DashboardLayout() {
 
   const handleConfirmKembali = () => {
     setShowConfirm(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/");
   };
 
   return (
     <div className="dl-root">
-
       {/* Modal Konfirmasi */}
       <ConfirmModal
         isOpen={showConfirm}
@@ -90,7 +99,9 @@ export default function DashboardLayout() {
               key={item.path}
               to={item.path}
               end
-              className={({ isActive }) => `dl-nav-item ${isActive ? "active" : ""}`}
+              className={({ isActive }) =>
+                `dl-nav-item ${isActive ? "active" : ""}`
+              }
               onClick={closeSidebar}
             >
               <span className="dl-nav-icon">{item.icon}</span>
@@ -117,7 +128,9 @@ export default function DashboardLayout() {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Buka menu"
           >
-            <span /><span /><span />
+            <span />
+            <span />
+            <span />
           </button>
 
           <div className="dl-topbar-logo">
@@ -139,7 +152,11 @@ export default function DashboardLayout() {
             </div>
             <div className="dl-topbar-avatar">
               {user?.profile_picture ? (
-                <img src={getProfileImage()} alt={user.nama} className="dl-avatar-image" />
+                <img
+                  src={getProfileImage()}
+                  alt={user.nama}
+                  className="dl-avatar-image"
+                />
               ) : (
                 getInitials(user?.nama)
               )}
