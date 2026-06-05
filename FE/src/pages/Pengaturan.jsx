@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./Pages.css";
 
+// Gunakan environment variable, fallback ke localhost untuk development
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 export default function Pengaturan() {
   const [settings, setSettings] = useState({
     namaLengkap: "",
@@ -23,11 +26,7 @@ export default function Pengaturan() {
   };
 
   // Ambil data profil
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
+ const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -35,7 +34,7 @@ export default function Pengaturan() {
         return;
       }
 
-      const response = await axios.get("http://localhost:5000/api/profile", {
+      const response = await axios.get(`${API_BASE}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -60,6 +59,10 @@ export default function Pengaturan() {
     }
   };
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   // Simpan profil
   const handleSave = async () => {
     setSuccess("");
@@ -67,7 +70,7 @@ export default function Pengaturan() {
       const token = localStorage.getItem("token");
 
       await axios.put(
-        "http://localhost:5000/api/profile",
+        `${API_BASE}/profile`,
         {
           nama: settings.namaLengkap,
           nomor_hp: settings.nomorHP,
@@ -82,7 +85,7 @@ export default function Pengaturan() {
       setSaved(true);
       setSuccess("✓ Perubahan berhasil disimpan!");
       setTimeout(() => {
-        window.location.reload(); // ← tambah ini
+        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error(
@@ -105,7 +108,7 @@ export default function Pengaturan() {
       formData.append("photo", file);
 
       const response = await axios.put(
-        "http://localhost:5000/api/profile/photo",
+        `${API_BASE}/profile/photo`,
         formData,
         {
           headers: {

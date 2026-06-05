@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashboardLayout.css";
 
-const moonPhases = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
+// Gunakan environment variable, fallback ke localhost untuk development
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+const moonPhases = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
 const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
 const tips = [
@@ -28,7 +30,7 @@ export default function Dashboard() {
     const fetchSleepData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/sleep-analysis", {
+        const res = await fetch(`${API_BASE}/sleep-analysis`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Gagal memuat data");
@@ -88,7 +90,6 @@ export default function Dashboard() {
           <div className="live-date">{formatDate(currentTime)}</div>
         </div>
       </div>
-
 
       {/* Chart Section */}
       <div className="chart-section">
