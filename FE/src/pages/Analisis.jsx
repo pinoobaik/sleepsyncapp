@@ -530,6 +530,8 @@ export default function Analisis() {
         console.warn("Gagal menyimpan riwayat analisis:", saveErr.message);
       }
     } catch (err) {
+      console.error(err);
+
       setError(
         "Tidak dapat terhubung ke server. Pastikan backend dan ML server berjalan."
       );

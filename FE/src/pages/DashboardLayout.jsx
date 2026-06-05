@@ -27,25 +27,31 @@ export default function DashboardLayout() {
   const closeSidebar = () => setSidebarOpen(false);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get(
+          "http://localhost:5000/api/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setUser(response.data);
+      } catch (error) {
+        console.error(
+          "Gagal mengambil profil:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
     fetchProfile();
   }, []);
-
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const response = await axios.get("http://localhost:5000/api/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data);
-    } catch (error) {
-      console.error(
-        "Gagal mengambil profil:",
-        error.response?.data || error.message
-      );
-    }
-  };
 
   const getInitials = (name) => {
     if (!name) return "U";
