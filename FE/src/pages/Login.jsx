@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Auth.css";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ export default function Login() {
       // Redirect ke dashboard
       navigate("/dashboard");
     } catch (err) {
+      console.error(err);
       setError("Tidak dapat terhubung ke server. Pastikan backend berjalan.");
     } finally {
       setLoading(false);
