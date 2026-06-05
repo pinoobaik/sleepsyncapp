@@ -19,7 +19,11 @@ const __dirname  = path.dirname(__filename);
 
 // Middleware 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://your-frontend.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
@@ -37,7 +41,7 @@ app.use("/api",          predictRoutes);
 
 // Health check 
 app.get("/", (req, res) => {
-  res.send("Backend SleepSync berjalan 🚀");
+  res.send("Backend SleepSync berjalan");
 });
 
 // Global error handler
