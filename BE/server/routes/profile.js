@@ -5,6 +5,9 @@ import upload from "../middleware/uploadProfile.js";
 
 const router = express.Router();
 
+// Gunakan environment variable untuk base URL backend
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+
 // get profile
 router.get("/", verifyToken, async (req, res) => {
   const userId = req.user.id;
@@ -39,7 +42,7 @@ router.get("/", verifyToken, async (req, res) => {
     return res.status(200).json({
       ...user,
       profile_picture: user.profile_picture
-        ? `http://localhost:5000/uploads/${user.profile_picture}`
+        ? `${BACKEND_URL}/uploads/${user.profile_picture}`
         : null,
     });
   } catch (err) {
@@ -49,7 +52,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// update profile
+// update profile (tidak perlu diubah)
 router.put("/", verifyToken, async (req, res) => {
   const userId = req.user.id;
   const { nama, nomor_hp, pekerjaan, kota, usia, gender } = req.body;
@@ -99,7 +102,7 @@ router.put("/photo", verifyToken, upload.single("photo"), async (req, res) => {
 
     return res.status(200).json({
       message: "Foto profil berhasil diperbarui",
-      profile_picture: `http://localhost:5000/uploads/${filename}`,
+      profile_picture: `${BACKEND_URL}/uploads/${filename}`,
     });
   } catch (err) {
     return res.status(500).json({
