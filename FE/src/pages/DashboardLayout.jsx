@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ConfirmModal from "../components/ConfirmModal";
-import "./pages.css";
+import "./Pages.css";
 
 const navItems = [
   { path: "/dashboard", icon: "🏠", label: "Dashboard" },

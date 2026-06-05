@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Pages.css";
-import "./Predict-additions.css";
+import "./predict-additions.css";
 
 const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
