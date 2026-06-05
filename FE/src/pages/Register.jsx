@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Register() {
   const navigate = useNavigate();
@@ -56,6 +56,7 @@ export default function Register() {
       // Registrasi berhasil → arahkan ke halaman login
       navigate("/login?registered=true");
     } catch (err) {
+      console.error(err);
       setError("Tidak dapat terhubung ke server. Pastikan backend berjalan.");
     } finally {
       setLoading(false);
