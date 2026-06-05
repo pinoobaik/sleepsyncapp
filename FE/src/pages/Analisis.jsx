@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./Pages.css";
 import "./predict-additions.css";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
 /**
@@ -339,16 +341,14 @@ export default function Analisis() {
   const [error, setError] = useState(null);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [allData, setAllData] = useState([]);
-
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileIncomplete, setProfileIncomplete] = useState(false);
-
   // Fetch profil user untuk pre-fill gender, usia, pekerjaan
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/profile", {
+        const res = await fetch(`${API_BASE}/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Gagal memuat profil");
@@ -366,7 +366,6 @@ export default function Analisis() {
         const ageNorm = profile.usia ? String(profile.usia) : "";
         const occupNorm = profile.pekerjaan || "";
 
-        // Tandai kalau ada field profil yang masih kosong
         if (!genderNorm || !ageNorm || !occupNorm) {
           setProfileIncomplete(true);
         }
@@ -388,37 +387,36 @@ export default function Analisis() {
 
   // Fetch riwayat analisis dari API
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/sleep-analysis", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Gagal memuat riwayat");
-        const raw = await res.json();
+      const fetchHistory = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${API_BASE}/sleep-analysis`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) throw new Error("Gagal memuat riwayat");
+          const raw = await res.json();
 
-        // Simpan semua data mentah (sudah urut DESC dari API)
-        const mapped = raw.map((item) => {
-          const d = new Date(item.created_at);
-          return {
-            day: HARI[d.getDay()],
-            date: d,
-            hours: parseFloat(item.sleep_duration) || 0,
-            quality: (parseFloat(item.quality_of_sleep) || 0) * 10,
-            deep: 0,
-            rem: 0,
-            light: 0,
-          };
-        });
-        setAllData(mapped);
-      } catch (e) {
-        console.error("Analisis fetch error:", e.message);
-      } finally {
-        setHistoryLoading(false);
-      }
-    };
-    fetchHistory();
-  }, [result]); // re-fetch setiap kali ada prediksi baru tersimpan
+          const mapped = raw.map((item) => {
+            const d = new Date(item.created_at);
+            return {
+              day: HARI[d.getDay()],
+              date: d,
+              hours: parseFloat(item.sleep_duration) || 0,
+              quality: (parseFloat(item.quality_of_sleep) || 0) * 10,
+              deep: 0,
+              rem: 0,
+              light: 0,
+            };
+          });
+          setAllData(mapped);
+        } catch (e) {
+          console.error("Analisis fetch error:", e.message);
+        } finally {
+          setHistoryLoading(false);
+        }
+      };
+      fetchHistory();
+    }, [result]); // re-fetch setiap kali ada prediksi baru tersimpan
 
   // Filter data berdasarkan tab aktif, lalu balik agar kronologis (lama → baru)
   const historyData = (() => {
@@ -464,7 +462,7 @@ export default function Analisis() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/predict", {
+      const response = await fetch(`${API_BASE}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -480,7 +478,6 @@ export default function Analisis() {
         return;
       }
 
-      // Map hasil ML model ke format tampilan
       const labelMap = {
         None: { label: "Tidur Normal", emoji: "😴", score: 8 },
         Insomnia: { label: "Insomnia", emoji: "😟", score: 4 },
@@ -507,7 +504,7 @@ export default function Analisis() {
 
       // Simpan hasil analisis ke database
       try {
-        await fetch("http://localhost:5000/api/sleep-analysis", {
+        await fetch(`${API_BASE}/sleep-analysis`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -526,12 +523,10 @@ export default function Analisis() {
           }),
         });
       } catch (saveErr) {
-        // Gagal simpan tidak mengganggu tampilan hasil prediksi
         console.warn("Gagal menyimpan riwayat analisis:", saveErr.message);
       }
     } catch (err) {
       console.error(err);
-
       setError(
         "Tidak dapat terhubung ke server. Pastikan backend dan ML server berjalan."
       );
