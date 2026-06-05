@@ -26,32 +26,38 @@ export default function DashboardLayout() {
 
   const closeSidebar = () => setSidebarOpen(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await axios.get(
-          "http://localhost:5000/api/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setUser(response.data);
       } catch (error) {
-        console.error(
-          "Gagal mengambil profil:",
-          error.response?.data || error.message
-        );
+        console.error("Gagal mengambil profil:", error);
       }
     };
 
     fetchProfile();
   }, []);
+
+  const getProfileImage = () => {
+    if (!user?.profile_picture) return null;
+
+    if (user.profile_picture.startsWith("http")) {
+      return user.profile_picture;
+    }
+
+    return `${API_URL.replace("/api", "")}/uploads/${user.profile_picture}`;
+  };
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -63,11 +69,11 @@ export default function DashboardLayout() {
       .toUpperCase();
   };
 
-  const getProfileImage = () => {
-    if (!user?.profile_picture) return null;
-    if (user.profile_picture.startsWith("http")) return user.profile_picture;
-    return `http://localhost:5000/uploads/${user.profile_picture}`;
-  };
+  // const getProfileImage = () => {
+  //   if (!user?.profile_picture) return null;
+  //   if (user.profile_picture.startsWith("http")) return user.profile_picture;
+  //   return `http://localhost:5000/uploads/${user.profile_picture}`;
+  // };
 
   const handleKembaliKeBeranda = () => {
     setShowConfirm(true);
