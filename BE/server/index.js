@@ -44,6 +44,11 @@ app.get("/", (req, res) => {
   res.send("Backend SleepSync berjalan");
 });
 
+// Health check untuk cron job (keep alive)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err.stack);
