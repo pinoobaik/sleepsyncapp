@@ -52,5 +52,5 @@ app.use((err, req, res, next) => {
 
 // Start server 
 app.listen(PORT, () => {
-  console.log(`Server SleepSync running on http://localhost:${PORT}`);
+  console.log(`Server SleepSync running on ${PORT}`);
 });
